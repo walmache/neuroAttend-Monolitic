@@ -13,18 +13,15 @@ return new class extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->id();
-            $table->integer('created_by');
+            $table->integer('created_by')->nullable(); // Usuario que creó la organización
             $table->string('name', 100);
             $table->string('address', 200)->nullable();
-            $table->string('representative', 100);
+            $table->string('representative', 100)->nullable();
             $table->string('phone', 20)->nullable();
-            $table->string('email', 100)->nullable();
+            $table->string('email', 100)->nullable()->unique();
             $table->text('notes')->nullable();
-            $table->smallInteger('status')->default(1);
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-    
-            //$table->foreign('created_by')->references('id')->on('users');
+            $table->boolean('status')->default(1); // Estado de la organización
+            $table->timestamps();
         });
     }
 

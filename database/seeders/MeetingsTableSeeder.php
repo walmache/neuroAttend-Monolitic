@@ -17,8 +17,7 @@ class MeetingsTableSeeder extends Seeder
             [
                 'organization_id' => 1, // Referencia a la organización
                 'meeting_type_id' => 1, // Referencia al tipo de reunión
-                'date' => '2025-03-01',
-                'time' => '10:00:00',
+                'datetime' => '2025-03-01 10:00:00',
                 'location' => 'Conference Room 1',
                 'description' => 'Quarterly business strategy discussion.',
                 'status' => 1,
@@ -29,8 +28,7 @@ class MeetingsTableSeeder extends Seeder
             [
                 'organization_id' => 2,
                 'meeting_type_id' => 2,
-                'date' => '2025-03-02',
-                'time' => '14:00:00',
+                'datetime' => '2025-03-02 14:00:00',
                 'location' => 'Room 305',
                 'description' => 'Monthly team project update meeting.',
                 'status' => 1,

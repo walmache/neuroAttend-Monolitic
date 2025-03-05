@@ -13,15 +13,11 @@ return new class extends Migration
     {
         Schema::create('meeting_types', function (Blueprint $table) {
             $table->id();
-            $table->integer('created_by');
+            $table->integer('created_by')->nullable(); // Usuario que creó el tipo de reunión
             $table->string('name', 100);
             $table->text('description')->nullable();
-            $table->smallInteger('status')->default(1);
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-            
-    
-            //$table->foreign('created_by')->references('id')->on('users'); // Si hay relación con usuarios
+            $table->boolean('status')->default(1); // Estado del tipo de reunión
+            $table->timestamps();
         });
     }
 
