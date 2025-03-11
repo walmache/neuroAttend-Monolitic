@@ -31,10 +31,11 @@ class UserRequest extends FormRequest
             'identification' => ['nullable', 'string', 'max:100', Rule::unique('users', 'identification')->ignore($userId)],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
             'phone' => 'nullable|string|max:20',
-            'photo' => 'nullable|image|max:2048', // Permitir imágenes de hasta 2MB
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'nullable|boolean',
             'password' => $this->isMethod('post') ? 'required|min:8|confirmed' : 'nullable|min:8|confirmed',
-            'login' => 'required|string|min:3|max:255|unique:users,login',
+            'login' => 'required|string|min:3|max:255|unique:users,login,' .  $userId,
+
 
         ];
     }
@@ -54,6 +55,7 @@ class UserRequest extends FormRequest
             'email.unique' => 'El correo ya está registrado.',
             'phone.max' => 'El teléfono no puede superar los 20 caracteres.',
             'photo.image' => 'Debe ser una imagen válida.',
+            'photo.mimes' => 'La imagen debe tener uno de los siguientes formatos: jpeg, png, jpg, gif.',
             'photo.max' => 'La imagen no puede ser mayor a 2MB.',
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',

@@ -8,7 +8,7 @@
         <h6 class="card-title">Registrar Asistencia</h6>
     </div>
     <div class="card-body">
-        <form id="attendanceForm" action="{{ route('record.attendance.store') }}" method="POST">
+        <form id="attendanceForm" action="{{-- route('record.attendance.store') --}}" method="POST">
             @csrf
 
             <div class="row">

@@ -4,15 +4,16 @@
         const submitBtn = document.getElementById('submitBtn');
 
         window.resetForm = function() {
-            form.reset();
-            form.classList.remove('was-validated');
-            form.querySelectorAll('.form-control').forEach(element => {
-                element.classList.remove('is-valid', 'is-invalid');
-            });
-            submitBtn.disabled = true;
-            form.querySelectorAll('.invalid-feedback').forEach(element => {
-                element.style.display = 'none';
-            });
+            window.location.href="{{ route('admin.organizations.index') }}"
+            // form.reset();
+            // form.classList.remove('was-validated');
+            // form.querySelectorAll('.form-control').forEach(element => {
+            //     element.classList.remove('is-valid', 'is-invalid');
+            // });
+            // submitBtn.disabled = true;
+            // form.querySelectorAll('.invalid-feedback').forEach(element => {
+            //     element.style.display = 'none';
+            // });
         };
 
         form.querySelectorAll('input, textarea').forEach(element => {

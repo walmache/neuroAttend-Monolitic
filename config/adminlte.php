@@ -591,6 +591,32 @@ return [
             ],
         ],
 
+        // 'BootstrapFileInput' => [
+        //     'active' => true,
+        //     'files' => [
+        //         [
+        //             'type' => 'js',
+        //             'asset' => true,
+        //             'location' => 'vendor/kartik-bootstrap-fileinput/js/fileinput.js',
+        //         ],
+        //         [
+        //             'type' => 'js',
+        //             'asset' => true,
+        //             'location' => 'vendor/kartik-bootstrap-fileinput/themes/fa5/theme.js',
+        //         ],
+        //         [
+        //             'type' => 'js',
+        //             'asset' => true,
+        //             'location' => 'vendor/kartik-bootstrap-fileinput/js/locales/es.js',
+        //         ],
+        //         [
+        //             'type' => 'css',
+        //             'asset' => true,
+        //             'location' => 'vendor/kartik-bootstrap-fileinput/css/fileinput.css',
+        //         ],
+        //     ],
+        // ],
+
         'SignaturePad' => [
             'active' => true,
             'files' => [

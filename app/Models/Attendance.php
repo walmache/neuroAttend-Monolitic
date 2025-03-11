@@ -44,9 +44,11 @@ class Attendance extends Model
     protected $fillable = [
         'meeting_id',
         'user_id',
-        'created_by',
         'attended',
         'signature',
+        'notes', 
+        'status',
+        'created_by',
     ];
 
     public function user()

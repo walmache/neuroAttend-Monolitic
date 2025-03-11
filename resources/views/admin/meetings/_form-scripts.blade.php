@@ -1,5 +1,4 @@
 <script>
-
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('meetingForm');
         const submitBtn = document.getElementById('submitBtn');
@@ -58,14 +57,23 @@
         });
 
         // Inicializar DateTime Range Picker
-        
+
         $('#datetime').daterangepicker({
             timePicker: true,
-            //singleDatePicker: true,
-            timePickerIncrement: 30,
-            minDate: moment().startOf('day'), 
+            singleDatePicker: true,
+            showDropdowns: true,
+            timePicker24Hour: true,
+            timePickerIncrement: 15,
+            minDate: moment().startOf('day'),
             locale: {
-                format: 'YYYY-MM-DD HH:mm'
+                format: 'YYYY-MM-DD HH:mm',
+                applyLabel: 'Aplicar',
+                cancelLabel: 'Cancelar',
+                fromLabel: 'Desde',
+                toLabel: 'Hasta',
+                customRangeLabel: 'Personalizado',
+                daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
             }
         });
     });

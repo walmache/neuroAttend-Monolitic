@@ -13,65 +13,80 @@ use App\Http\Requests\MeetingRequest;
 
 class MeetingController extends Controller
 {
-    public function index()
+    public function index(MeetingType $meetingType)
     {
-        $user = Auth::user();
-        $canViewAll = in_array($user->role, ['Administrador', 'Moderador']);
-        $canViewAll = 1;
+        try {
+            // Construir la consulta base con relaciones
+            $meetingsQuery = Meeting::with(['organization', 'meetingType', 'createdBy']);
+            // Definir la ruta base para el botón de edición
+            $route = "admin.meetings.edit";
 
-        $meetings = $canViewAll ? Meeting::with(['organization', 'meetingType', 'createdBy'])->get() : Meeting::where('status', 1)->with(['organization', 'meetingType', 'creator'])->get();
+            // Si hay un MeetingType, filtrar las reuniones por ese tipo
+            if ($meetingType && $meetingType->id) {
+                $meetingsQuery->where('meeting_type_id', $meetingType->id);
+                $route = "admin.meeting-types.meetings.edit"; // Ruta específica si accede desde un tipo de reunión
+            }
 
-        $meetings = $meetings->map(function ($record) {
-            return [
-                'id' => $record->id,
-                'organization' => $record->organization->name,
-                'meeting_type' => $record->meetingType->name,
-                'datetime' => $record->datetime,
-                'location' => $record->location,
-                'description' => $record->description,
-                'status' => $record->status ? 'Activo' : 'Inactivo',
-                'actions' => '
-                <div class="btn-group btn-group-sm" role="group" aria-label="Input group">
-                    <div class="d-flex justify-content-around">
-                        <a href="' . route("admin.meetings.edit", $record->id) . '" 
-                            class="btn btn-primary btn-xs" 
-                            data-toggle="tooltip" 
-                            data-placement="top" 
-                            title="Editar" data-container=".content">
-                            <i class="fa fa-edit"></i>  
-                        </a>
-                        <form action="' . route("admin.meetings.destroy", $record->id) . '" method="POST" class="d-inline toggle-status-form">
-                            ' . csrf_field() . method_field("DELETE") . '
-                            <button type="submit" 
-                                class="btn btn-xs btn-warning ' . ($record->status ? 'btn-delete' : 'btn-activate') . '" 
+            // Obtener reuniones
+            $meetings = $meetingsQuery->get();
+
+            $meetings = $meetings->map(function ($record) use ($route, $meetingType) {
+                return [
+                    'id' => $record->id,
+                    'organization' => $record->organization->name,
+                    'meeting_type' => $record->meetingType->name,
+                    'datetime' => $record->datetime,
+                    'location' => $record->location,
+                    'description' => $record->description,
+                    'status' => $record->status ? 'Activo' : 'Inactivo',
+                    'actions' => '
+                        <div class="btn-group btn-group-xs" role="group">
+                            <!-- Botón Editar -->
+                            <a href="' . route($route, ($meetingType && $meetingType->id) ? [$meetingType, $record->id] : [$record->id]) . '" 
+                                class="btn btn-primary btn-xs"
                                 data-toggle="tooltip" 
-                                title="' . ($record->status ? 'Inactivar' : 'Reactivar') . '"
-                                data-status="' . $record->status . '" 
-                                data-container=".content">
-                                <i class="fa ' . ($record->status ? 'fa-trash' : 'fa-check') . '"></i>
-                            </button>
-                        </form>
-                        <!-- Botón de Ver Usuarios -->
-                        <a href="' . route("admin.organizations.show", $record->id) . '" 
-                            class="btn btn-info btn-xs" 
-                            data-toggle="tooltip" 
-                            data-placement="top" 
-                            title="Ver Asistentes" data-container=".content"> 
-                            <i class="fa fa-users"></i>  
-                        </a>
-                    </div>
-                </div>'
-            ];
-        });
-        
-        return view('admin.meetings.index', compact('meetings'));
+                                data-placement="top"
+                                data-container=".content"
+                                title="Editar">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <!-- Botón Ver Participantes -->
+                            <a href="' . route("admin.meetings.attendances.index", $record->id) . '"
+                                class="btn btn-info btn-xs"
+                                data-toggle="tooltip" 
+                                data-placement="top"
+                                data-container=".content"
+                                title="Participantes">
+                                <i class="fa fa-users"></i>
+                            </a>
+                            <!-- Botón Eliminar -->
+                            <form action="' . route("admin.meetings.destroy", $record->id) . '" 
+                                method="POST" class="d-inline delete-form">
+                                ' . csrf_field() . method_field("DELETE") . '
+                                <button type="submit" class="btn btn-danger btn-xs btn-delete"
+                                    data-toggle="tooltip" 
+                                    data-placement="top"
+                                    data-container=".content"
+                                    title="Eliminar">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>'
+                ];
+            });
+            
+            return view('admin.meetings.index', compact('meetings','meetingType'));
+        } catch (\Exception $e) {
+            Log::error('Error al listar reuniones para : ' . ($meetingType->name ?? 'todas') . " - " . $e->getMessage());
+            return back()->with('error', 'Ocurrió un error al obtener las reuniones.');
+        }
     }
 
-    public function create()
+    public function create(MeetingType $meetingType)
     {
         $organizations = Organization::all();
         $meetingTypes = MeetingType::all();
-        return view('admin.meetings.create', compact('organizations', 'meetingTypes'));
+        return view('admin.meetings.create', compact('organizations', 'meetingTypes','meetingType'));
     }
 
     public function store(MeetingRequest $request)

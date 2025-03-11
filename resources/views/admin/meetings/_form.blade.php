@@ -1,6 +1,7 @@
 <!-- resources/views/admin/meetings/_form.blade.php -->
 @php
-$formTitle = isset($meeting) ? 'Editar Reunión' : 'Nueva Reunión';
+$formTitle  = isset($meeting) ? 'Editar Reunión' : 'Nueva Reunión';
+$formTitle .= (!empty($meetingType) && isset($meetingType->id) ? ' - ' . $meetingType->name : '');
 $formAction = isset($meeting) ? route('admin.meetings.update', $meeting->id) : route('admin.meetings.store');
 @endphp
 
@@ -44,13 +45,17 @@ $formAction = isset($meeting) ? route('admin.meetings.update', $meeting->id) : r
                 <div class="col-md-4">
                     <select class="form-control form-control-sm select2 {{ $errors->has('meeting_type_id') ? 'is-invalid' : '' }}"
                         id="meeting_type_id" name="meeting_type_id" required>
-                        <option value="">Seleccione un tipo de reunión</option>
-                        @foreach($meetingTypes as $meetingType)
-                        <option value="{{ $meetingType->id }}"
-                            {{ old('meeting_type_id', $meeting->meeting_type_id ?? '') == $meetingType->id ? 'selected' : '' }}>
-                            {{ $meetingType->name }}
-                        </option>
-                        @endforeach
+                        @if (isset($meetingType) && $meetingType && $meetingType->id)
+                            <option value="{{ $meetingType->id }}" selected>{{ $meetingType->name }}</option>
+                        @else
+                            <option value="">Seleccione un tipo de reunión</option>
+                            @foreach($meetingTypes as $meetingType)
+                            <option value="{{ $meetingType->id }}"
+                                {{ old('meeting_type_id', $meeting->meeting_type_id ?? '') == $meetingType->id ? 'selected' : '' }}>
+                                {{ $meetingType->name }}
+                            </option>
+                            @endforeach
+                        @endif
                     </select>
                     <div class="invalid-feedback">
                         {{ $errors->first('meeting_type_id') ?: 'Seleccione un tipo de reunión válido.' }}

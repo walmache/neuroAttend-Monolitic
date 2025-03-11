@@ -1,24 +1,7 @@
 <script>
-
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('userForm');
         const submitBtn = document.getElementById('submitBtn');
-
-        window.resetForm = function() {
-            form.reset();
-            form.classList.remove('was-validated');
-            form.querySelectorAll('.form-control').forEach(element => {
-                element.classList.remove('is-valid', 'is-invalid');
-            });
-            submitBtn.disabled = true;
-            form.querySelectorAll('.invalid-feedback').forEach(element => {
-                element.style.display = 'none';
-            });
-
-            // Reset Select2
-            $('.select2').val(null).trigger('change');
-
-        };
 
         form.querySelectorAll('input, textarea, select').forEach(element => {
             element.addEventListener('input', checkFormValidity);
@@ -55,13 +38,30 @@
         });
 
         bsCustomFileInput.init();
-        
 
-        
-    
-
-
-
-        
     });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Agregar evento a todos los botones con clase toggle-password
+    document.querySelectorAll('.toggle-password').forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Obtener el ID del campo de contraseña desde el atributo data-target
+            const targetId = this.getAttribute('data-target');
+            const passwordInput = document.getElementById(targetId);
+
+            // Cambiar el tipo de input
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                this.querySelector('i').classList.remove('fa-eye');
+                this.querySelector('i').classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                this.querySelector('i').classList.remove('fa-eye-slash');
+                this.querySelector('i').classList.add('fa-eye');
+            }
+        });
+    });
+});
 </script>

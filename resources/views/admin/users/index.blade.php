@@ -1,13 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Reuniones')
+@section('title', isset($organization) && $organization && $organization->id ? 'Usuarios de ' . $organization->name : 'Todos los Usuarios')
 
 @section('content_body')
-
 <div class="card card-secondary">
     <div class="card-header d-flex justify-content-between align-items-center p-1">
-        <h6 class="card-title flex-grow-1">Reuniones</h6>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm "><i class="fas fa-plus-square"></i> Añadir </a>
+        <h6 class="card-title flex-grow-1">{{ isset($organization) && $organization && $organization->id ? 'Usuarios de ' . $organization->name : 'Todos los Usuarios' }}</h6>
+        <a href="{{ isset($organization) && $organization && $organization->id ? 
+                    route('admin.organizations.users.create', $organization->id) : route('admin.users.create') }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus-square"></i> Añadir 
+        </a>
     </div>
     <div class="card-body pt-1 pb-1">
         <div class="table-responsive ">
@@ -33,7 +35,8 @@
                         <td>{{ $record['identification'] }}</td>
                         <td>{{ $record['role'] }}</td>
                         <td>{{ $record['login'] }}</td>
-                        <td>{{ $record['photo'] }}</td>
+                        <td><img src="{{ $record['photo'] ? asset('storage/'.$record['photo']) : asset('img/default-avatar.png') }}" 
+                        class="img-thumbnail border border-primary" width="50"></td> 
                         <td class="text-center">{!! $record['actions'] !!}</td>
                     </tr>
                     @endforeach
@@ -42,7 +45,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('js')

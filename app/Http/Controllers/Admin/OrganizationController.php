@@ -10,6 +10,7 @@ use App\Http\Requests\OrganizationRequest;
 use Illuminate\Support\Facades\Auth;
 
 
+
 class OrganizationController extends Controller
 {
     public function __construct()
@@ -36,20 +37,19 @@ class OrganizationController extends Controller
                 // Si no tiene permiso, devuelve un error 403
                 abort(403, 'No tienes permiso para ver esta sección.');
             }
-            $organizations = $organizations->map(function ($organization) {
+            $organizations = $organizations->map(function ($record) {
                 return [
-                    'id' => $organization->id,
-                    'name' => $organization->name,
-                    'address' => $organization->address,
-                    'representative' => $organization->representative,
-                    'phone' => $organization->phone,
-                    'email' => $organization->email,
-                    'notes' => $organization->notes,
+                    'id' => $record->id,
+                    'name' => $record->name,
+                    'address' => $record->address,
+                    'representative' => $record->representative,
+                    'phone' => $record->phone,
+                    'email' => $record->email,
+                    'notes' => $record->notes,
                     'actions' => '
-                    <div class="btn-group btn-group-sm" role="group" aria-label="Input group">
-                        <div class="d-flex justify-content-around">
+                        <div class="btn-group btn-group-xs" role="group">
                             <!-- Botón de Editar -->
-                            <a href="' . route("admin.organizations.edit", $organization->id) . '" 
+                            <a href="' . route("admin.organizations.edit", $record->id) . '" 
                                 class="btn btn-primary btn-xs" 
                                 data-toggle="tooltip" 
                                 data-placement="top" 
@@ -57,27 +57,26 @@ class OrganizationController extends Controller
                                 <i class="fa fa-edit"></i>  
                             </a>
                             <!-- Formulario para Inactivar/Reactivar -->
-                            <form action="' . route("admin.organizations.destroy", $organization->id) . '" method="POST" class="d-inline toggle-status-form">
+                            <form action="' . route("admin.organizations.destroy", $record->id) . '" method="POST" class="d-inline toggle-status-form">
                                 ' . csrf_field() . method_field("DELETE") . '
                                 <button type="submit" 
-                                    class="btn btn-xs btn-warning ' . ($organization->status ? 'btn-delete' : 'btn-activate') . '" 
+                                    class="btn btn-xs ' . ($record->status ? 'btn-delete btn-danger' : 'btn-activate btn-warning ') . '" 
                                     data-toggle="tooltip" 
-                                    title="' . ($organization->status ? 'Inactivar' : 'Reactivar') . '"
-                                    data-status="' . $organization->status . '" 
+                                    title="' . ($record->status ? 'Inactivar' : 'Reactivar') . '"
+                                    data-status="' . $record->status . '" 
                                     data-container=".content">
-                                    <i class="fa ' . ($organization->status ? 'fa-trash' : 'fa-check') . '"></i>
+                                    <i class="fa ' . ($record->status ? 'fa-exclamation-triangle' : 'fa-check') . '"></i>
                                 </button>
                             </form>
                             <!-- Botón de Ver Usuarios -->
-                            <a href="' . route("admin.organizations.show", $organization->id) . '" 
+                            <a href="' . route("admin.organizations.users.index", $record->id) . '" 
                                 class="btn btn-info btn-xs" 
                                 data-toggle="tooltip" 
                                 data-placement="top" 
                                 title="Ver Usuarios" data-container=".content"> 
                                 <i class="fa fa-users"></i>  
                             </a>
-                        </div>
-                    </div>'
+                        </div>'
                 ];
             });
             return view('admin.organizations.index', compact('organizations'));

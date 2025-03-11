@@ -1,14 +1,20 @@
 @extends('layouts.app')
 
 @section('title', 'Reuniones')
+@section('title', isset($meetingType) && $meetingType && $meetingType->id ? 'Reuniones de ' . $meetingType->name : 'Todas las Reuniones')
 
 @section('content_body')
 
 <div class="card card-secondary">
     <div class="card-header d-flex justify-content-between align-items-center p-1">
-        <h6 class="card-title flex-grow-1">Reuniones</h6>
-        <a href="{{ route('admin.meetings.create') }}" class="btn btn-primary btn-sm "><i class="fas fa-plus-square"></i> Añadir </a>
+        <h6 class="card-title flex-grow-1">{{ isset($meetingType) && $meetingType && $meetingType->id ? 'Reuniones de ' . $meetingType->name : 'Todas las Reuniones' }}</h6>
+        <a href="{{ isset($meetingType) && $meetingType && $meetingType->id ? 
+                    route('admin.meeting-types.meetings.create', $meetingType->id) : route('admin.meetings.create') }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus-square"></i> Añadir 
+        </a>
     </div>
+
+
     <div class="card-body pt-1 pb-1">
         <div class="table-responsive ">
             <table id="meetingsTable" class="table table-hover table-sm beautify compressed bordered">

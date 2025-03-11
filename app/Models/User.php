@@ -115,25 +115,30 @@ class User extends Authenticatable
         ];
     }
 
-    protected $guard_name = 'web';
-    // Relación con la organización
+    protected $guard_name = 'web'; //Importantisimo
+
+
+    
     public function organization()
     {
         return $this->belongsTo(Organization::class, 'organization_id');
     }
-    // Relación con las reuniones (como creador o asistente)
+
     public function meetings()
     {
-        return $this->hasMany(Meeting::class, 'created_by');
+        return $this->belongsToMany(Meeting::class, 'attendances')
+                    ->withPivot(['attended', 'signature', 'notes', 'status']);
     }
-    // Relación con las asistencias (como usuario que asiste a las reuniones)
+
+    
     public function attendances()
     {
         return $this->hasMany(Attendance::class, 'user_id');
     }
-    // Relación con los registros de asistencia que el usuario ha creado
-    public function createdAttendances()
-    {
-        return $this->hasMany(Attendance::class, 'created_by');
-    }
+
+    // // Relación con los registros de asistencia que el usuario ha creado
+    // public function createdAttendances()
+    // {
+    //     return $this->hasMany(Attendance::class, 'created_by');
+    // }
 }

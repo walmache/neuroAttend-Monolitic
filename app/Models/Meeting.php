@@ -83,4 +83,10 @@ class Meeting extends Model
         return $this->hasMany(Attendance::class, 'meeting_id');
     }
 
+    public function attendees()
+    {
+        return $this->belongsToMany(User::class, 'attendances')
+            ->withPivot(['attended', 'signature', 'notes', 'status']);
+    }
+    
 }

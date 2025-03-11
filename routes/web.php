@@ -5,7 +5,7 @@ use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\MeetingController;
 use App\Http\Controllers\Admin\MeetingTypeController;
-use App\Http\Controllers\Record\AttendanceController;
+use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
@@ -55,9 +55,17 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('users', UserController::class)->names('organizations.users');
         });
 
-        Route::prefix('meeting-types/{meeting-type}')->group(function () {
-            Route::resource('meetings', UserController::class)->names('meeting-tyoes.meetings');
+        Route::prefix('meeting-types/{meetingType}')->group(function () {
+            Route::resource('meetings', MeetingController::class)->names('meeting-types.meetings');
         });
+
+        Route::prefix('meetings/{meeting}/attendances')->group(function () {
+            Route::get('/', [AttendanceController::class, 'index'])->name('meetings.attendances.index');
+            Route::post('/{user}', [AttendanceController::class, 'store'])->name('meetings.attendances.store');
+            Route::patch('/{attendance}', [AttendanceController::class, 'update'])->name('meetings.attendances.update');
+            Route::delete('/{attendance}', [AttendanceController::class, 'destroy'])->name('meetings.attendances.destroy');
+        });
+
 
 
         

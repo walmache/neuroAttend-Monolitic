@@ -13,20 +13,23 @@ class MeetingTypeController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        $canViewAll = in_array($user->role, ['Administrador', 'Moderador']);
-        $canViewAll=1;
 
-        $meetingTypes = $canViewAll ? MeetingType::all() : MeetingType::where('status', 1)->get();
+        try {
+            $user = Auth::user();
 
-        $meetingTypes = $meetingTypes->map(function ($record) {
-            return [
-                'id' => $record->id,
-                'name' => $record->name,
-                'description' => $record->description,
-                'actions' => '
-                <div class="btn-group btn-group-sm" role="group" aria-label="Input group">
-                    <div class="d-flex justify-content-around">
+            if ($user->hasRole('SuperAdministrador')) {
+                $meetingTypes = MeetingType::all(); // 🔹 SuperAdministrador puede ver todas las organizaciones
+            } else {
+                abort(403, 'No tienes permiso para ver esta sección.');
+            }
+
+            $meetingTypes = $meetingTypes->map(function ($record) {
+                return [
+                    'id' => $record->id,
+                    'name' => $record->name,
+                    'description' => $record->description,
+                    'actions' => '
+                    <div class="btn-group btn-group-xs" role="group">
                         <!-- Botón de Editar -->
                         <a href="' . route("admin.meeting-types.edit", $record->id) . '" 
                             class="btn btn-primary btn-xs" 
@@ -39,20 +42,31 @@ class MeetingTypeController extends Controller
                         <form action="' . route("admin.meeting-types.destroy", $record->id) . '" method="POST" class="d-inline toggle-status-form">
                             ' . csrf_field() . method_field("DELETE") . '
                             <button type="submit" 
-                                class="btn btn-xs btn-warning ' . ($record->status ? 'btn-delete' : 'btn-activate') . '" 
+                                class="btn btn-xs '. ($record->status ? 'btn-delete btn-danger' : 'btn-activate btn-warning ') . '"
                                 data-toggle="tooltip" 
                                 title="' . ($record->status ? 'Inactivar' : 'Reactivar') . '"
                                 data-status="' . $record->status . '" 
                                 data-container=".content">
-                                <i class="fa ' . ($record->status ? 'fa-trash' : 'fa-check') . '"></i>
+                                <i class="fa ' . ($record->status ? 'fa-exclamation-triangle' : 'fa-check'). '"></i>
                             </button>
                         </form>
-                    </div>
-                </div>'
-            ];
-        });
-                
-        return view('admin.meeting-types.index', compact('meetingTypes'));
+                        <!-- Botón de Ver Usuarios -->
+                        <a href="' . route("admin.meeting-types.meetings.index", $record->id) . '" 
+                            class="btn btn-info btn-xs" 
+                            data-toggle="tooltip" 
+                            data-placement="top" 
+                            title="Ver Reuniones" data-container=".content"> 
+                            <i class="fa  fa-layer-group"></i>  
+                        </a>
+                    </div>'
+                ];
+            });
+
+            return view('admin.meeting-types.index', compact('meetingTypes'));
+        } catch (\Exception $e) {
+            Log::error('Error al listar tipos de Reuniones : ' . $e->getMessage());
+            return back()->with('error', 'Ocurrió un error al obtener los tipos de reuniones.');
+        }
     }
 
     public function create()

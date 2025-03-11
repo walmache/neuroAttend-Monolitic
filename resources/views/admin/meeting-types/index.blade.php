@@ -38,7 +38,7 @@
 @section('js')
 <script>
     $(document).ready(function() {
-        $('#meetinTypesTable').DataTable();
+        $('#meetingTypesTable').DataTable();
     });
 
     document.addEventListener('DOMContentLoaded', function() {
