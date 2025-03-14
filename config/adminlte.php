@@ -513,19 +513,13 @@ return [
                     'asset' => true,
                     'location' => 'vendor/datatables-plugins/responsive/js/responsive.bootstrap4.min.js',
                 ],
-
-
                 [
                     'type' => 'js',
                     'asset' => true,
                     'location' => 'vendor/datatables-plugins/rowgroup/js/dataTables.rowGroup.min.js',
                 ],
-
-
-
             ],
         ],
-
         'Select2' => [
             'active' => true,
             'files' => [
@@ -551,7 +545,6 @@ return [
                 ],
             ],
         ],
-
         'Moment' => [
             'active' => true,
             'files' => [
@@ -562,7 +555,6 @@ return [
                 ],
             ],
         ],
-
         'Daterangepicker' => [
             'active' => true,
             'files' => [
@@ -578,7 +570,6 @@ return [
                 ],
             ],
         ],
-
         'Bscustomfileinput' => [
             'active' => true,
             'files' => [
@@ -653,6 +644,19 @@ return [
                 ],
             ],
         ],
+
+        'CustomScripts' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/customScripts/init.js'
+                ],
+            ],
+        ],
+
+
     ],
 
     /*

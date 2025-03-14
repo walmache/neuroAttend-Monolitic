@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
 
 class OrganizationRequest extends FormRequest
 {
@@ -28,7 +30,12 @@ class OrganizationRequest extends FormRequest
             'address'       => 'nullable|string|max:200',
             'representative'=> 'required|string|max:100',
             'phone'         => 'nullable|string|max:20',
-            'email'         => 'nullable|email|max:100',
+            'email' => [
+                'nullable',
+                'email',
+                'max:100',
+                Rule::unique('organizations', 'email')->ignore($this->route('organization'))
+            ],
             'notes'         => 'nullable|string|max:500',
         ];
     }
@@ -47,7 +54,8 @@ class OrganizationRequest extends FormRequest
             'representative.required' => 'El representante es obligatorio.',
             'representative.max' => 'El nombre del representante no debe exceder los 100 caracteres.',
             'phone.max' => 'El teléfono no debe exceder los 20 caracteres.',
-            'email.email' => 'El correo electrónico debe ser válido.',
+            'email.email' => 'El correo electrónico debe ser válido.', 
+            'email.unique' => 'El correo electrónico ya está en uso.',
             'notes.max' => 'Las observaciones no deben exceder los 500 caracteres.',
         ];
     }

@@ -7,7 +7,6 @@
     <div class="card-header">
         <h6 class="card-title">{{ $formTitle }}</h6>
     </div>
-    <!-- Si es edición, usamos el método PUT o PATCH -->
     <form id="organization" method="POST" action="{{ $formAction }}" novalidate>
         @csrf
         @if(isset($organization))

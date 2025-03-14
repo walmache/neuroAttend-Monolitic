@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Requests\OrganizationRequest;
 use Illuminate\Support\Facades\Auth;
 
-
-
 class OrganizationController extends Controller
 {
     public function __construct()
@@ -25,7 +23,6 @@ class OrganizationController extends Controller
 
     public function index()
     {
-        
         try {
             $user = Auth::user();
 
@@ -34,7 +31,6 @@ class OrganizationController extends Controller
             } elseif ($user->hasRole('Administrador')) {
                 $organizations = Organization::where('id', $user->organization_id)->get(); // 🔹 Administrador solo ve las organizaciones a las que pertenece
             } else {
-                // Si no tiene permiso, devuelve un error 403
                 abort(403, 'No tienes permiso para ver esta sección.');
             }
             $organizations = $organizations->map(function ($record) {
@@ -102,11 +98,6 @@ class OrganizationController extends Controller
             Log::error('Error al crear organización: ' . $e->getMessage());
             return back()->withInput()->withErrors(['error' => 'Error al guardar los datos']);
         }
-    }
-
-    public function show(Organization $organization)
-    {
-        return view('admin.organizations.show', compact('organization'));
     }
 
     public function edit(Organization $organization)
