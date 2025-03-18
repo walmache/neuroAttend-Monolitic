@@ -11,7 +11,7 @@
     </div>
     <div class="card-body pt-1 pb-1">
         <div class="table-responsive ">
-            <table id="meetingTypesTable" class="table table-hover table-sm beautify compressed bordered">
+            <table id="meetingTypesTable" class="datatable table table-hover table-sm beautify compressed bordered">
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -34,38 +34,3 @@
 </div>
 
 @endsection
-
-@section('js')
-<script>
-    $(document).ready(function() {
-        $('#meetingTypesTable').DataTable();
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.addEventListener('click', function(e) {
-            let button = e.target.closest('.toggle-status-form button');
-            if (!button) return; // Si no es un botón dentro del formulario, salir
-
-            e.preventDefault();
-            let form = button.closest('form');
-            let isActive = button.getAttribute('data-status') === '1';
-
-            Swal.fire({
-                title: isActive ? '¿Inactivar registro?' : '¿Reactivar registro?',
-                html: isActive ?
-                    '<div class="text-danger mb-3"><i class="fa fa-exclamation-triangle fa-3x"></i></div><p>¡Esta acción no se puede deshacer!</p>' : '<div class="text-success mb-3"><i class="fa fa-check-circle fa-3x"></i></div><p>La organización será activada nuevamente.</p>',
-                showCancelButton: true,
-                confirmButtonColor: isActive ? '#d33' : '#28a745',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: isActive ? '<i class="fa fa-trash"></i> Inactivar' : '<i class="fa fa-check"></i> Reactivar',
-                cancelButtonText: '<i class="fa fa-times"></i> Cancelar',
-                allowOutsideClick: false
-            }).then((result) => {
-                if (result.value) {
-                    form.submit();
-                }
-            });
-        });
-    });
-</script>
-@stop

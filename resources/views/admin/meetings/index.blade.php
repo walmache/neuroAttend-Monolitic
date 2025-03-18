@@ -17,7 +17,7 @@
 
     <div class="card-body pt-1 pb-1">
         <div class="table-responsive ">
-            <table id="meetingsTable" class="table table-hover table-sm beautify compressed bordered">
+            <table id="meetingsTable" class="datatable table table-hover table-sm beautify compressed bordered">
                 <thead>
                     <tr>
                         <th>Organización</th>
@@ -47,12 +47,8 @@
 
 @endsection
 
-@section('js')
+<!-- @section('js')
 <script>
-    $(document).ready(function() {
-        $('#meetingsTable').DataTable();
-    });
-
     document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('click', function(e) {
             let button = e.target.closest('.toggle-status-form button');
@@ -80,4 +76,4 @@
         });
     });
 </script>
-@stop
+@stop -->

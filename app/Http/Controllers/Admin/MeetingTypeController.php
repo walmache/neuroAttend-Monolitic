@@ -13,16 +13,13 @@ class MeetingTypeController extends Controller
 {
     public function index()
     {
-
         try {
             $user = Auth::user();
-
             if ($user->hasRole('SuperAdministrador')) {
                 $meetingTypes = MeetingType::all(); // 🔹 SuperAdministrador puede ver todas las organizaciones
             } else {
                 abort(403, 'No tienes permiso para ver esta sección.');
             }
-
             $meetingTypes = $meetingTypes->map(function ($record) {
                 return [
                     'id' => $record->id,
@@ -61,7 +58,6 @@ class MeetingTypeController extends Controller
                     </div>'
                 ];
             });
-
             return view('admin.meeting-types.index', compact('meetingTypes'));
         } catch (\Exception $e) {
             Log::error('Error al listar tipos de Reuniones : ' . $e->getMessage());
@@ -85,11 +81,6 @@ class MeetingTypeController extends Controller
             Log::error('Error al crear tipo de reunión: ' . $e->getMessage());
             return back()->withInput()->withErrors(['error' => 'Error al guardar los datos']);
         }
-    }
-
-    public function show(MeetingType $meetingType)
-    {
-        //
     }
 
     public function edit(MeetingType $meetingType)

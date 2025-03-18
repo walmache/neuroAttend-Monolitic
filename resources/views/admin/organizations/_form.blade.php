@@ -100,7 +100,7 @@
         </div>
         <div class="card-footer p-2">
             <button type="submit" class="btn btn-info btn-xs" id="submitBtn" disabled>Guardar</button>
-            <button type="button" class="btn btn-default btn-xs float-right" onclick="resetForm()">Cancelar</button>
+            <button type="button" class="btn btn-default btn-xs float-right" onclick="resetForm(event)" data-redirect="{{ route('admin.organizations.index') }}">Cancelar</button>
         </div>
     </form>
 </div>

@@ -60,8 +60,7 @@ class MeetingController extends Controller
                                 <i class="fa fa-users"></i>
                             </a>
                             <!-- Botón Eliminar -->
-                            <form action="' . route("admin.meetings.destroy", $record->id) . '" 
-                                method="POST" class="d-inline delete-form">
+                            <form action="' . route("admin.meetings.destroy", $record->id) . '" method="POST" class="d-inline delete-form">
                                 ' . csrf_field() . method_field("DELETE") . '
                                 <button type="submit" class="btn btn-danger btn-xs btn-delete"
                                     data-toggle="tooltip" 
@@ -74,7 +73,6 @@ class MeetingController extends Controller
                         </div>'
                 ];
             });
-            
             return view('admin.meetings.index', compact('meetings','meetingType'));
         } catch (\Exception $e) {
             Log::error('Error al listar reuniones para : ' . ($meetingType->name ?? 'todas') . " - " . $e->getMessage());
@@ -91,11 +89,10 @@ class MeetingController extends Controller
 
     public function store(MeetingRequest $request)
     {
-        
-
         $validated = $request->validated();
         $validated['created_by'] = Auth::id();
         try {
+            //dd($validated);
             Meeting::create($validated);
             return redirect()->route('admin.meetings.index')->with('success', 'Reunión creada correctamente.');
         } catch (\Exception $e) {

@@ -12,7 +12,7 @@
     </div>
     <div class="card-body pt-1 pb-1">
         <div class="table-responsive">
-            <table id="attendanceTable" class="table table-hover table-sm beautify compressed bordered">
+            <table id="attendanceTable" class="datatable table table-hover table-sm beautify compressed bordered">
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -46,9 +46,7 @@
 @endsection
 @section('js')
 <script>
-    $(document).ready(function() {
-        $('#attendanceTable').DataTable();
-    });
+    
 
     // document.addEventListener("DOMContentLoad   ed", function() {
     //     document.querySelectorAll(".mark-attendance").forEach(function(checkbox) {

@@ -22,4 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
         //$exceptions->report(function (TokenMismatchException $exception) {
         //    return redirect()->route('login')->with('error', 'La sesión ha expirado.');
         //});
+        // $exceptions->renderable(function (\Exception $e) {
+        //     if ($e->getPrevious() instanceof \Illuminate\Session\TokenMismatchException) {
+        //         return redirect()->route('login')->withInput()->withErrors(['email' => 'La sesión ha expirado.']);
+        //     };
+        // });
     })->create();

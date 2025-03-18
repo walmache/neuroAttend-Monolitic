@@ -21,10 +21,10 @@
                 </div>
                 <div class="col-md">
                     <input type="text"
-                           class="form-control form-control-sm {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                           id="name" name="name" placeholder="Nombre"
-                           minlength="3" maxlength="100"
-                           value="{{ old('name', $meetingType->name ?? '') }}" required>
+                            class="form-control form-control-sm {{ $errors->has('name') ? 'is-invalid' : '' }}"
+                            id="name" name="name" placeholder="Nombre"
+                            minlength="3" maxlength="100"
+                            value="{{ old('name', $meetingType->name ?? '') }}" required>
                     <div class="invalid-feedback">
                         {{ $errors->first('name') ?: 'El nombre es requerido (3-100 caracteres)' }}
                     </div>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-md">
                     <textarea class="form-control form-control-sm {{ $errors->has('description') ? 'is-invalid' : '' }}"
-                              id="description" name="description" rows="2" placeholder="Descripción opcional" maxlength="500">{{trim(old('description', $meetingType->description ?? ''))}}</textarea>
+                        id="description" name="description" rows="2" placeholder="Descripción opcional" maxlength="500">{{trim(old('description', $meetingType->description ?? ''))}}</textarea>
                     <div class="invalid-feedback">
                         {{ $errors->first('description') ?: 'Máximo 500 caracteres permitidos' }}
                     </div>
@@ -46,7 +46,7 @@
         </div>
         <div class="card-footer p-2">
             <button type="submit" class="btn btn-info btn-xs" id="submitBtn" disabled>Guardar</button>
-            <button type="button" class="btn btn-default btn-xs float-right" onclick="resetForm()">Cancelar</button>
+            <button type="button" class="btn btn-default btn-xs float-right" onclick="resetForm(event)" data-redirect="{{ route('admin.meeting-types.index') }}">Cancelar</button>
         </div>
     </form>
 </div>

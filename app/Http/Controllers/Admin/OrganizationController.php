@@ -13,7 +13,6 @@ class OrganizationController extends Controller
 {
     public function __construct()
     {
-        
         // Aplicar permisos a cada acción
         $this->middleware('permission:ver organizaciones')->only('index');
         $this->middleware('permission:crear organizaciones')->only(['create', 'store']);
@@ -25,7 +24,6 @@ class OrganizationController extends Controller
     {
         try {
             $user = Auth::user();
-
             if ($user->hasRole('SuperAdministrador')) {
                 $organizations = Organization::all(); // 🔹 SuperAdministrador puede ver todas las organizaciones
             } elseif ($user->hasRole('Administrador')) {
@@ -52,6 +50,14 @@ class OrganizationController extends Controller
                                 title="Editar" data-container=".content">
                                 <i class="fa fa-edit"></i>  
                             </a>
+                            <!-- Botón de Ver Usuarios -->
+                            <a href="' . route("admin.organizations.users.index", $record->id) . '" 
+                                class="btn btn-info btn-xs" 
+                                data-toggle="tooltip" 
+                                data-placement="top" 
+                                title="Partticipantes" data-container=".content"> 
+                                <i class="fa fa-users"></i>  
+                            </a>
                             <!-- Formulario para Inactivar/Reactivar -->
                             <form action="' . route("admin.organizations.destroy", $record->id) . '" method="POST" class="d-inline toggle-status-form">
                                 ' . csrf_field() . method_field("DELETE") . '
@@ -64,14 +70,6 @@ class OrganizationController extends Controller
                                     <i class="fa ' . ($record->status ? 'fa-exclamation-triangle' : 'fa-check') . '"></i>
                                 </button>
                             </form>
-                            <!-- Botón de Ver Usuarios -->
-                            <a href="' . route("admin.organizations.users.index", $record->id) . '" 
-                                class="btn btn-info btn-xs" 
-                                data-toggle="tooltip" 
-                                data-placement="top" 
-                                title="Ver Usuarios" data-container=".content"> 
-                                <i class="fa fa-users"></i>  
-                            </a>
                         </div>'
                 ];
             });

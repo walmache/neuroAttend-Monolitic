@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 | Rutas Públicas
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {  return view('welcome'); });
+//Route::get('/', function () {  return view('welcome'); });
 
 // Rutas de autenticación (login, registro, etc.)
 Auth::routes();
@@ -94,7 +94,28 @@ Route::middleware(['auth'])->group(function () {
     | Keep-Alive (Evitar Cierre de Sesión)
     |--------------------------------------------------------------------------
     */
-    Route::get('/keep-alive', function () {
+    // Route::get('/keep-alive', function () {
+    //     return response()->json(['status' => 'ok']);
+    // })->name('keep-alive');
+});
+
+// Ruta de fallback (para cualquier ruta no definida)
+Route::fallback(function () {
+    return redirect()->route('login'); // Asegúrate de que existe una ruta llamada 'login'
+});
+
+
+Route::get('/test-419', function () {
+    return view('test419');
+});
+
+Route::post('/submit-test', function () {
+    return 'Formulario enviado correctamente';
+})->name('submit.test');
+
+Route::get('/keep-alive', function() {
+    if (auth()->check()) {
         return response()->json(['status' => 'ok']);
-    })->name('keep-alive');
+    }
+    return response()->json(['status' => 'error', 'message' => 'Session expired'], 401);
 });

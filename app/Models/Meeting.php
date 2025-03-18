@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 /**
  * 
@@ -16,6 +17,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $location
  * @property string|null $description
  * @property int $status
+ * 
+ * @property int $duration
+ * @property bool $virtual
+ * @property int $capacity
+ * @property array $customFields
+ * @property bool $remember
+ * @property float $fee_amount
+ * @property string $qr_code
+ * 
  * @property string $created_at
  * @property string $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Attendance> $attendances
@@ -23,19 +33,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\User $createdBy
  * @property-read \App\Models\MeetingType $meetingType
  * @property-read \App\Models\Organization $organization
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereDatetime($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereMeetingTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereOrganizationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingDocument> $documents
+ *
  * @mixin \Eloquent
  */
 class Meeting extends Model
@@ -50,15 +49,45 @@ class Meeting extends Model
         'datetime',
         'location',
         'description',
+        'duration',
+        'is_virtual',
+        'capacity',
+        'custom_fields',
+        'remember',
+        'fee_amount',
+        'qr_code',
         'status',
-        'created_at',
-        'updated_at',
         'created_by'
     ];
 
-    public $timestamps = false;
+    protected $attributes = [
+        'custom_fields' => '{}' // Valor predeterminado como JSON vacío
+    ];
 
-    protected $dates = ['datetime'];
+    public $timestamps = true;
+
+    protected $dates = ['datetime', 'created_at', 'updated_at'];
+    
+
+    protected $casts = [
+        'virtual' => 'boolean',
+        'capacity' => 'integer',
+        'custom_fields' => 'array',
+        'remember' => 'boolean',
+        'datetime' => 'datetime',
+        'fee_amount' => 'decimal:2'
+    ];
+    public static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            if (isset($model->datetime)) {
+                // Asegúrate de convertir el valor de 'datetime' a un objeto Carbon
+                $model->datetime = Carbon::parse($model->datetime);
+            }
+        });
+    }
 
     // Relación con la organización
     public function organization()
@@ -87,6 +116,27 @@ class Meeting extends Model
     {
         return $this->belongsToMany(User::class, 'attendances')
             ->withPivot(['attended', 'signature', 'notes', 'status']);
+    }
+
+    // Para convertir minutos en formato legible (horas:minutos)
+    public function getFormattedTimeAttribute()
+    {
+        $hours = floor($this->time / 60);
+        $minutes = $this->time % 60;
+        return sprintf('%d:%02d', $hours, $minutes);
+    }
+    
+    // Accesorio para generar código QR si no existe
+    public function generateQrCode()
+    {
+        if (empty($this->qr_code)) {
+            // Genera un código único para esta reunión
+            $uniqueCode = md5($this->id . '-' . $this->datetime . '-' . time());
+            $this->qr_code = $uniqueCode;
+            $this->save();
+        }
+        
+        return $this->qr_code;
     }
     
 }

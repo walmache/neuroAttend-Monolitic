@@ -16,15 +16,9 @@ class MeetingRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        if ($this->has('datetime')) {
-            // Extraer solo la primera fecha del rango
-            $datetime = explode(' - ', $this->datetime)[0]; // Obtiene la fecha inicial
-
-            // Convertir al formato correcto si es necesario
-            $this->merge([
-                'datetime' => \Carbon\Carbon::createFromFormat('Y-m-d H:i', $datetime)->format('Y-m-d H:i:s'),
-            ]);
-        }
+        $this->merge([
+            'is_virtual' => $this->has('is_virtual') ? 1 : 0,
+        ]);
     }
 
 
@@ -36,13 +30,15 @@ class MeetingRequest extends FormRequest
     public function rules(): array
     {
 
-       
-
         return [
             'organization_id' => 'required|exists:organizations,id',
             'meeting_type_id' => 'required|exists:meeting_types,id',
-            'datetime' => 'required|date|after_or_equal:today',
+            'datetime' => 'required|date_format:Y-m-d H:i|after_or_equal:today',
+            'duration' => 'required|integer|min:1',
+            'is_virtual' => 'nullable',
             'location' => 'required|string|max:200',
+            'capacity' => 'required|integer|min:0',
+            'fee_amount' => 'required|numeric|min:0',
             'description' => 'nullable|string|max:500',
         ];
     }
@@ -50,18 +46,24 @@ class MeetingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'organization_id.required' => 'Debe seleccionar una organización.',
-            'organization_id.exists' => 'La organización seleccionada no es válida.',
-            'meeting_type_id.required' => 'Debe seleccionar un tipo de reunión.',
-            'meeting_type_id.exists' => 'El tipo de reunión seleccionado no es válido.',
-            'datetime.required' => 'La fecha y hora de la reunión es obligatoria.',
-            'datetime.date' => 'Debe ingresar una fecha válida.',
-            'datetime.after_or_equal' => 'La fecha y hora de la reunión no pueden ser anteriores a hoy. ',
-            'location.required' => 'Debe proporcionar una ubicación.',
-            'location.string' => 'La ubicación debe ser un texto válido.',
-            'location.max' => 'La ubicación no puede superar los 200 caracteres.',
-            'description.string' => 'La descripción debe ser un texto válido.',
-            'description.max' => 'La descripción no puede superar los 500 caracteres.',
+            'organization_id.required' => 'Seleccione una organización.',
+            'organization_id.exists' => 'La organización seleccionada no existe.',
+            'meeting_type_id.required' => 'Seleccione un tipo de reunión.',
+            'meeting_type_id.exists' => 'El tipo de reunión seleccionado no existe.',
+            'datetime.required' => 'La fecha y hora son obligatorias.',
+            'datetime.date_format' => 'El formato de fecha y hora debe ser YYYY-MM-DD HH:MM.',
+            'duration.required' => 'La duración es obligatoria.',
+            'duration.integer' => 'La duración debe ser un número entero.',
+            'duration.min' => 'La duración debe ser al menos 1 minuto.',
+            'location.required' => 'La ubicación es obligatoria.',
+            'location.max' => 'La ubicación no puede exceder los 200 caracteres.',
+            'capacity.required' => 'La capacidad es obligatoria.',
+            'capacity.integer' => 'La capacidad debe ser un número entero.',
+            'capacity.min' => 'La capacidad no puede ser negativa.',
+            'fee_amount.required' => 'El monto de la cuota es obligatorio.',
+            'fee_amount.numeric' => 'El monto de la cuota debe ser un número.',
+            'fee_amount.min' => 'El monto de la cuota no puede ser negativo.',
+            'description.max' => 'La descripción no puede exceder los 500 caracteres.',
         ];
     }
 }

@@ -1,53 +1,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('meetingForm');
-        const submitBtn = document.getElementById('submitBtn');
-
-        window.resetForm = function() {
-            form.reset();
-            form.classList.remove('was-validated');
-            form.querySelectorAll('.form-control').forEach(element => {
-                element.classList.remove('is-valid', 'is-invalid');
-            });
-            submitBtn.disabled = true;
-            form.querySelectorAll('.invalid-feedback').forEach(element => {
-                element.style.display = 'none';
-            });
-
-            // Reset Select2
-            $('.select2').val(null).trigger('change');
-
-            // Reset DateTimePicker
-            $('#date_time_range').val('').trigger('change');
-        };
-
-        form.querySelectorAll('input, textarea, select').forEach(element => {
-            element.addEventListener('input', checkFormValidity);
-            element.addEventListener('blur', checkFormValidity);
-        });
-
-        function checkFormValidity() {
-            let isValid = true;
-            form.querySelectorAll('input, textarea, select').forEach(element => {
-                if (!element.checkValidity()) {
-                    isValid = false;
-                    element.classList.add('is-invalid');
-                    element.classList.remove('is-valid');
-                } else {
-                    element.classList.add('is-valid');
-                    element.classList.remove('is-invalid');
-                }
-            });
-            submitBtn.disabled = !isValid;
+        const form = document.getElementById('meeting');
+        if (form) {
+            validateFormRealTime(form);
         }
-
-        form.addEventListener('submit', function(e) {
-            if (!form.checkValidity()) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        });
 
         // Inicializar Select2
         $('.select2').select2({
@@ -56,15 +12,25 @@
             placeholder: 'Seleccione una opción'
         });
 
-        // Inicializar DateTime Range Picker
-
-        $('#datetime').daterangepicker({
+        // Inicializar DateRangePicker 
+        const originalDateTime = $('#datetime').val();        
+        $('.datetimepicker').daterangepicker({
             timePicker: true,
             singleDatePicker: true,
             showDropdowns: true,
             timePicker24Hour: true,
             timePickerIncrement: 15,
             minDate: moment().startOf('day'),
+            startDate: originalDateTime ? moment(originalDateTime) : function() {
+                var now = moment();
+                var minutes = now.minutes();
+                var remainder = minutes % 10;
+                if (remainder > 0) {
+                    now.add(10 - remainder, 'minutes');
+                }
+                now.seconds(0);
+                return now;
+            }(),
             locale: {
                 format: 'YYYY-MM-DD HH:mm',
                 applyLabel: 'Aplicar',
@@ -77,4 +43,18 @@
             }
         });
     });
+
+    $(document).ready(function() {
+        function updateLocationLabel() {
+            var isChecked = $('#is_virtual').prop('checked');
+            $('label[for="location"]').text(isChecked ? 'Enlace:' : 'Ubicación:');
+        }
+        updateLocationLabel();
+        $('#is_virtual').on('change', function() {
+            updateLocationLabel();
+        });
+    });
+
+
+
 </script>

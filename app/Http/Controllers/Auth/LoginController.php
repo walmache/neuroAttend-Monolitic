@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -50,5 +51,25 @@ class LoginController extends Controller
         return redirect('/login'); // Redirige al usuario a la página de login
     }
 
-    
+    // protected function sendFailedLoginResponse(Request $request)
+    // {
+    //     // Si la solicitud es Ajax (para el toastr)
+    //     if ($request->expectsJson()) {
+    //         return response()->json(['error' => 'Credenciales incorrectas'], 422);
+    //     }
+
+    //     // Mensaje en sesión para Toastr
+    //     return redirect()->back()
+    //         ->withInput($request->only('email', 'remember'))
+    //         ->with('error', 'Las credenciales ingresadas son incorrectas.');
+    // }
+
+
+    // protected function sendFailedLoginResponse(Request $request)
+    // {
+    //     throw ValidationException::withMessages([
+    //         'error' => ['Las credenciales proporcionadas son incorrectas.'],
+    //     ]);
+    // }
+
 }

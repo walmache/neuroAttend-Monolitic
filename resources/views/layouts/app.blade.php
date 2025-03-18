@@ -23,14 +23,9 @@
 @push('js')
 <script>
     window.flashMessages = @json(session()->all());
-    
+    window.flashMessages.errors = @json($errors->toArray());
     window.sessionData = {
-            success: @json(session('success')),
-            error: @json(session('error')),
-            warning: @json(session('warning')),
-            info: @json(session('info')),
-            errors: @json($errors->all()),
-            sessionLifetime: {{ config('session.lifetime') }},
-        };
+        sessionLifetime: @json(config('session.lifetime'))
+    }; 
 </script>
 @endpush
